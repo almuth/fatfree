@@ -1028,8 +1028,8 @@ final class Base {
 		$case=$this->hive['CASELESS']?'i':'';
 		foreach ($this->hive['ROUTES'] as $url=>$types) {
 			if (!preg_match('/^'.
-				preg_replace('/@(\w+\b)/','(?P<\1>[^\/\?]+)',
-				str_replace('\*','(.*)',preg_quote($url,'/'))).
+				str_replace('/', '\/', preg_replace('/@(\w+\b)\((.*?)\)/','(?P<\1>\2)',
+				str_replace('\*','(.*)', $url))).
 				'\/?(?:\?.*)?$/'.$case.'um',$req,$args))
 				continue;
 			$route=NULL;
