@@ -1091,8 +1091,8 @@ final class Base {
 		foreach ($this->hive['ROUTES'] as $url=>$routes) {
 			$url=str_replace("\x00".'@','@',$url);
 			if (!preg_match('/^'.
-				preg_replace('/@(\w+\b)/','(?P<\1>[^\/\?]+)',
-				str_replace('\*','(.*)',preg_quote($url,'/'))).
+				str_replace('/', '\/', preg_replace('/@(\w+\b)\((.*?)\)/','(?P<\1>\2)',
+				str_replace('\*','(.*)', $url))).
 				'\/?(?:\?.*)?$/'.$case.'um',$req,$args))
 				continue;
 			$route=NULL;
