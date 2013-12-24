@@ -4,7 +4,7 @@
 
 [![Flattr this project](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=phpfatfree&url=https://github.com/bcosca/fatfree)
 
-Condensed in a single ~50KB file, F3 (as we fondly call it) gives you solid foundation, a mature code base, and a no-nonsense approach to writing Web applications. Under the hood is an easy-to-use Web development tool kit, a high-performance URL routing and cache engine, built-in code highlighting, and support for multilingual applications. It's lightweight, easy-to-use, and fast. Most of all, it doesn't get in your way.
+Condensed in a single ~60KB file, F3 (as we fondly call it) gives you solid foundation, a mature code base, and a no-nonsense approach to writing Web applications. Under the hood is an easy-to-use Web development tool kit, a high-performance URL routing and cache engine, built-in code highlighting, and support for multilingual applications. It's lightweight, easy-to-use, and fast. Most of all, it doesn't get in your way.
 
 Whether you're a novice or an expert PHP programmer, F3 will get you up and running in no time. No unnecessary and painstaking installation procedures. No complex configuration required. No convoluted directory structures. There's no better time to start developing Web applications the easy way than right now!
 
@@ -14,11 +14,12 @@ That's not all. F3 is packaged with other optional plug-ins that extend its capa
 
 * Fast and clean template engine,
 * Unit testing toolkit,
-* Database-managed sessions,
+* Database-managed sessions with automatic CSRF protection,
 * Markdown-to-HTML converter,
 * Atom/RSS feed reader,
 * Image processor,
 * Geodata handler,
+* Google static maps,
 * On-the-fly Javascript/CSS compressor,
 * OpenID (consumer),
 * Custom logger,
@@ -53,17 +54,19 @@ The philosophy behind the framework and its approach to software architecture is
 
 [![Twitter](ui/images/twitter.png)](https://twitter.com/phpfatfree)
 
+### Version 3.2 Is Finally Here!
+
+The latest official release marks a major milestone in the development of the Fat-Free Framework. Packed with exciting new features and outstanding documentation that consumed significant time and effort to develop and refine, version 3.2 is finally available for download. This edition is packed with a bunch of new usability and security features.
+
+F3 has a stable enterprise-class architecture. Unbeatable performance, user-friendly features and a lightweight footprint. What more can you ask for?
+
+It is highly recommended that experienced users develop new applications with this version to take advantage of the latest code base and its significant improvements.
+
 ## Introducing FatFreeFramework.com
 
 **Detailed API documentation with lots of code examples and a graphic guide can now be found at [http://fatfreeframework.com/](http://fatfreeframework.com/).**
 
 Of course this handy online reference is powered by F3! It showcases the framework's capability and performance. Check it out now.
-
-### Version 3.1 Is Finally Here!
-
-The latest official release marks a major milestone in the development of the Fat-Free Framework. Packed with exciting new features and outstanding documentation that consumed significant time and effort to develop and refine, version 3.1 is finally available for download. The code base has been rewritten from the ground up to provide enterprise-class architecture and performance but with the same user-friendly features and lightweight footprint.
-
-It is highly recommended that experienced users develop new applications with this version to take advantage of the latest features and significant improvements.
 
 ## Getting Started
 
@@ -197,6 +200,47 @@ $f3->route('GET /brew/*',
 ```
 
 An important point to consider: You will get Fat-Free (and yourself) confused if you have both `GET /brew/@count` and `GET /brew/*` together in the same application. Use one or the other. Another thing: Fat-Free sees `GET /brew` as separate and distinct from the route `GET /brew/@count`. Each can have different route handlers.
+
+
+### Named Routes
+
+When you define a route, you can assign it a name. Use the route name in your code and templates instead of a typed url. Then if you need to change your urls to please the marketing overlords, you only need to make the change where the route was defined. The route names must follow php variable naming rules (no dots, dashes nor hyphens).
+
+Let's name a route:-
+
+``` php
+$f3->route('GET @beer_list: /beer', 'Beer->list');
+```
+
+The name is inserted after the route VERB (`GET` in this example) preceeded by an `@` symbol, and separated from the URL portion by a colon `:` symbol. You can insert a space around the colon if that makes it easier to read your code (as shown here).
+
+To access the named route in a template, get the value of the named route as the key of the `ALIASES` hive array:-
+
+``` html
+<a href="{{ @ALIASES.beer_list }}">View beer list</a>
+```
+
+To redirect the visitor to a new URL, call the named route inside the `reroute() method like:-
+
+``` php
+// a named route is a string value
+$f3->reroute('@beer_list'); // note the single quotes
+```
+
+If you use tokens in your route, F3 will replace those tokens with their current value. If you want to change the token's value before calling reroute, pass it as the 2nd argument.:-
+
+``` php
+$f3->route('GET @beer_list: /beer/@country', 'Beer->bycountry');
+$f3->route('GET @beer_list: /beer/@country/@village', 'Beer->byvillage');
+
+// a set of key-value pairs is passed as argument to named route
+$f3->reroute('@beer_list(@country=Germany)');
+
+// if more than one token needed
+$f3->reroute('@beer_list(@country=Germany,@village=Rhine)');
+```
+
+Don't forget to `urlencode()` your arguments if you have characters that do not comply with RFC 1738 guidelines for well-formed URLs.
 
 ### Dynamic Web Sites
 
@@ -2100,6 +2144,10 @@ Once you get the hang of testing the smallest units of your application, you can
 
 * Language (and dictionary) to use if no translation is available.
 
+`bool HALT`
+
+* If TRUE (default), framework stops execution after a non-fatal error is detected.
+
 `array HEADERS`
 
 * HTTP request headers received by the server.
@@ -2155,6 +2203,10 @@ Once you get the hang of testing the smallest units of your application, you can
 `int PORT`
 
 * TCP/IP listening port used by the Web server.
+
+`string PREFIX`
+
+* String prepended to language dictionary terms.
 
 `bool QUIET`
 
@@ -2311,7 +2363,7 @@ Once you get the hang of testing the smallest units of your application, you can
 
 The most up-to-date documentation is located at [http://fatfreeframework.com/](http://fatfreeframework.com/). It contains examples of usage of the various framework components.
 
-The framework API documentation can also be viewed offline. It is contained in `lib/api.chm` of the distribution package. F3 uses [Doxygen](http://www.stack.nl/~dimitri/doxygen/) to generate output in compiled HTML format. You need a CHM reader to view its tree-structured contents. For Mac users, there's [Chmox](http://chmox.sourceforge.net/) and [iChm](http://code.google.com/p/ichm/). Linux users have more choices: [xCHM](http://xchm.sourceforge.net/), [GnoCHM](http://gnochm.sourceforge.net/), [ChmSee](http://code.google.com/p/chmsee/), and [Kchmviewer](http://www.ulduzsoft.com/linux/kchmviewer/). Windows supports `.chm` files right out of the box.
+The framework API documentation can also be viewed offline. It is contained in `lib/api/` folder of the distribution package. Use your favorite browser and point it to the `lib/api/index.html` file.
 
 ## Support and Licensing
 
@@ -2341,14 +2393,16 @@ The Fat-Free Framework is community-driven software. It can't be what it is toda
 
 * GitHub
 * Square Lines, LLC
+* Talis Group, Ltd.
 * Mirosystems
 * Tecnilógica
 * Stehlik & Company
 * G Holdings, LLC
 * S2 Development, Ltd.
+* Store Machine
 * PHP Experts, Inc.
-* Sascha Ohms
 * Christian Knuth
+* Sascha Ohms
 * Jermaine Maree
 * Sergey Zaretsky
 * Daniel Kloke
@@ -2415,11 +2469,14 @@ The Fat-Free Framework is community-driven software. It can't be what it is toda
 * IT_GAP
 * Sergeev Andrey
 * Lars Brandi Jensen
-* Sashank Tadepalli
 * Steven J Mixon
 * Roland Fath
 * Justin Parker
 * Costas Menico
+* Mathieu-Philippe Bourgeois
+* Ryan McKillop
+* Chris Clarke
+* Ngan Ting On
 
 Special thanks to the selfless others who expressed their desire to remain anonymous, yet share their time, contribute code, send donations, promote the framework to a wider audience, as well as provide encouragement and regular financial assistance. Their generosity is F3's prime motivation.
 
