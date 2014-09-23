@@ -2,6 +2,10 @@
 
 $f3=require('lib/base.php');
 
+$f3->set('DEBUG',1);
+if ((float)PCRE_VERSION<7.9)
+	trigger_error('PCRE version is out of date');
+
 $f3->config('config.ini');
 
 $f3->route('GET /',
@@ -61,13 +65,15 @@ $f3->route('GET /',
 				array('dom','xmlrpc')
 		);
 		$f3->set('classes',$classes);
-		echo View::instance()->render('welcome.htm');
+		$f3->set('content','welcome.htm');
+		echo View::instance()->render('layout.htm');
 	}
 );
 
 $f3->route('GET /userref',
-	function() {
-		echo View::instance()->render('userref.htm');
+	function($f3) {
+		$f3->set('content','userref.htm');
+		echo View::instance()->render('layout.htm');
 	}
 );
 
