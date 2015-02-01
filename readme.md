@@ -36,8 +36,9 @@ Unlike other frameworks, F3 aims to be usable - not usual.
 
 The philosophy behind the framework and its approach to software architecture is towards minimalism in structural components, avoiding application complexity and striking a balance between code elegance, application performance and programmer productivity.
 
-[![Paypal](ui/images/donate.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJSQL8N5LPDAY)
-[![Bitcoin](ui/images/bitcoin.png)](https://coinbase.com/checkouts/7986a0da214006256d470f2f8e1a15cf)
+[![Paypal](ui/images/paypal.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJSQL8N5LPDAY)
+
+![Bitcoin](ui/images/bitcoin.png)
 
 ## Table of Contents
 
@@ -54,9 +55,9 @@ The philosophy behind the framework and its approach to software architecture is
 
 [![Twitter](ui/images/twitter.png)](https://twitter.com/phpfatfree)
 
-### Version 3.3 Is Finally Released!
+### Version 3.4 Is Finally Released!
 
-The latest official release marks a major milestone in the development of the Fat-Free Framework. Packed with exciting new features and outstanding documentation that consumed significant time and effort to develop and refine, version 3.3 is now available for download. This edition is packed with a bunch of new usability and security features.
+The latest official release welcomes the new year with a bang and marks the final milestone in this version of the Fat-Free Framework. Packed with exciting new features and outstanding documentation that consumed significant time and effort to develop and refine, version 3.4 is now available for download. This edition is packed with a bunch of new usability and security features.
 
 F3 has a stable enterprise-class architecture. Unbeatable performance, user-friendly features and a lightweight footprint. What more can you ask for?
 
@@ -84,7 +85,7 @@ Unzip the contents of the distribution package anywhere in your hard drive. By d
 
 **Important:** If your application uses APC, Memcached, WinCache, XCache, or a filesystem cache, clear all cache entries first before overwriting an older version of the framework with a new one.
 
-Make sure you're running the right version of PHP. F3 does not support versions earlier than PHP 5.3. You'll be getting syntax errors (false positives) all over the place because new language constructs and closures/anonymous functions are not supported by outdated PHP versions. To find out, open your console (`bash` shell on Linux, or `cmd.exe` on Windows):-
+Make sure you're running the right version of PHP. F3 does not support versions earlier than PHP 5.3. You'll be getting syntax errors (false positives) all over the place because new language constructs and closures/anonymous functions are not supported by outdated PHP versions. To find out, open your console (`bash` shell on GNU/Linux, or `cmd.exe` on Windows):-
 
 ```
 /path/to/php -v
@@ -435,7 +436,9 @@ Fat-Free's `$f3->map()` method provides a ReST interface by mapping HTTP methods
 
 **Note:** Browsers do not implement the HTTP `PUT` and `DELETE` methods in regular HTML forms. These and other ReST methods (`HEAD`, and `CONNECT`) are accessible only via AJAX calls to the server.
 
-If the framework receives an HTTP method that's not implemented by a class, it generates an `HTTP 405 Method Not Allowed` error. F3 automatically responds with the appropriate headers to HTTP `OPTIONS` method requests. The framework will not map this request to a class.
+If the framework receives an HTTP request for a route that maps to a method that is not implemented by a class (perhaps you've made an error in the route mapping, or the method is not written yet), it generates an `HTTP 405 Method Not Allowed` error.
+
+If a client requests HTTP `OPTIONS` for a URL resource, F3 responds with the appropriate HTTP headers that indicate which methods are allowed for the resource (HEAD, GET, PUT, etc). The framework will not map the `OPTIONS` request to a class.
 
 ### The F3 Autoloader
 
@@ -951,7 +954,7 @@ That's like the `<!-- comment -->` HTML comment tag, but the `<exclude>` directi
 Here's another way of excluding template content or adding comments:-
 
 ``` html
-{{* <p>A chunk of HTML we don't want displayed at the moment</p> *}}
+{* <p>A chunk of HTML we don't want displayed at the moment</p> *}
 ```
 
 ### Conditional Segments
@@ -1251,7 +1254,7 @@ This may have undesirable effects. You might not want all variables to pass thro
 In the case of PHP templates:-
 
 ``` php
-<?php echo Base::instance()->raw($html_content); ?>
+<?php echo View::instance()->raw($html_content); ?>
 ```
 
 As an addition to auto-escaping of F3 variables, the framework also gives you a free hand at sanitizing user input from HTML forms:-
@@ -1271,7 +1274,7 @@ Fat-Free is designed to make the job of interfacing with SQL databases a breeze.
 Establishing communication with a SQL engine like MySQL, SQLite, SQL Server, Sybase, and Oracle is done using the familiar `$f3->set()` command. Connecting to a SQLite database would be:-
 
 ``` php
-$db=new DB\SQL('sqlite:/absolute/path/to/your/database.sqlite'));
+$db=new DB\SQL('sqlite:/absolute/path/to/your/database.sqlite');
 ```
 
 Another example, this time with MySQL:-
@@ -2257,6 +2260,10 @@ Once you get the hang of testing the smallest units of your application, you can
 
 * Toggle switch for suppressing or enabling standard output and error messages. Particularly useful in unit testing.
 
+`bool RAW`
+
+* Disable automatic storage of HTTP request body into `BODY`. Should be TRUE when processing large data coming from `php://input` which will not fit in memory. Default value: `FALSE`
+
 `string REALM`
 
 * Full canonical URL.
@@ -2400,7 +2407,7 @@ Once you get the hang of testing the smallest units of your application, you can
 * Equivalent of the PHP switch-case jump table structure.
 
 ```
-{{* text-block *}}
+{* text-block *}
 ```
 * Alias for `<exclude>`.
 
@@ -2439,18 +2446,20 @@ The Fat-Free Framework is community-driven software. It can't be what it is toda
 * GitHub
 * Square Lines, LLC
 * Mirosystems
+* Stehlik & Company
 * Talis Group, Ltd.
 * Tecnilógica
-* Stehlik & Company
 * G Holdings, LLC
 * S2 Development, Ltd.
 * Store Machine
 * PHP Experts, Inc.
+* Meins und Vogel GmbH
+* Online Prepaid Services
 * Christian Knuth
 * Sascha Ohms
+* Lars Brandi Jensen
 * Jermaine Maree
 * Eyðun Lamhauge
-* Lars Brandi Jensen
 * Sergey Zaretsky
 * Daniel Kloke
 * Brian Nelson
@@ -2527,11 +2536,27 @@ The Fat-Free Framework is community-driven software. It can't be what it is toda
 * Seregin Andrew
 * Marek Toman
 * Diji Enterprises
+* uonick
+* Kamil Kiblis
+* Mars Yau
+* Martin Latinov
+* Malikov Evgene
+* Andres Espinoza Arce
+* Matthew Williamson
+* Andrew Brookes
+* Steve Cove
+* Steven Witten
+* Silvan Seeholzer
 
 Special thanks to the selfless others who expressed their desire to remain anonymous, yet share their time, contribute code, send donations, promote the framework to a wider audience, as well as provide encouragement and regular financial assistance. Their generosity is F3's prime motivation.
 
-[![Paypal](ui/images/donate.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJSQL8N5LPDAY)
-[![Bitcoin](ui/images/bitcoin.png)](https://coinbase.com/checkouts/7986a0da214006256d470f2f8e1a15cf)
+[![Paypal](ui/images/paypal.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJSQL8N5LPDAY)
+
+![Bitcoin](ui/images/bitcoin.png)
+
+### Legal notice
+
+By making a donation to this project you signify that you acknowledged, understood, accepted, and agreed to the terms and conditions contained in this notice. Your donation to the Fat-Free Framework project is voluntary and is not a fee for any services, goods, or advantages, and making a donation to the project does not entitle you to any services, goods, or advantages. We have the right to use the money you donate to the Fat-Free Framework project in any lawful way and for any lawful purpose we see fit and we are not obligated to disclose the way and purpose to any party unless required by applicable law. Although Fat-Free Framework is free software, to our best knowledge this project does not have any tax-exempt status. The Fat-Free Framework project is neither a registered non-profit corporation nor a registered charity in any country. Your donation may or may not be tax-deductible; please consult this with your tax advisor. We will not publish/disclose your name and e-mail address without your consent, unless required by applicable law. Your donation is non-refundable.
 
 **Copyright (c) 2009-2014 F3::Factory/Bong Cosca &lt;bong&#46;cosca&#64;yahoo&#46;com&gt;**
 
